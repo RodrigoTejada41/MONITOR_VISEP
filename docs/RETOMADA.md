@@ -4,6 +4,8 @@ Checkpoint: 2026-09-16, America/Sao_Paulo. Diretorio: E:\Projetos\VISEP_Monitora
 
 ## Leia primeiro ao retomar
 
+Ancora do codigo e da analise SG3: `5b4a104b37579c37128af75582ad68eb030e2a2c`, publicada em origin/main. Revisoes documentais posteriores devem preservar essa referencia.
+
 1. Este arquivo, INTEGRACAO_SG_SYSTEM_III.md e COMPARACAO_SG3_MODELO.md.
 2. TESTE_BYKOM.md, scripts/Build.ps1 e scripts/Import-Legacy.ps1 para fluxo existente.
 3. BACKLOG.md e specs sao planejamento historico; confrontar com o codigo atual e evidencias antes de repetir trabalho.

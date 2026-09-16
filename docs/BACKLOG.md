@@ -11,7 +11,7 @@ Atualizado em 2026-09-16. Resultados e comandos em RETOMADA.md.
 | TASK-005 | Build/scripts/inspector | EM VALIDACAO | Build e 32 assertions integradas passaram; instalador nao homologado |
 | TASK-006 | Validacao integrada | EM VALIDACAO | Core, integracao e E2E executados; percentual de cobertura nao medido |
 | TASK-007 | Manual e checkpoint | CONCLUIDA | OPERACAO.md, RETOMADA.md e matrizes atualizados nesta rodada |
-| TASK-008 | Banco servidor/migracao | BLOQUEADO | Backup disponivel; falta fixar versoes, validar semantica e implementar importador/reconciliacao |
+| TASK-008 | Banco servidor/migracao | BLOQUEADO | Backup disponivel; importador inicial existe; falta fixar versoes, validar semantica e reconciliacao |
 | TASK-009 | SG real | BLOQUEADO | Manual/protocolo e receptor laboratorio ausentes |
 | TASK-010 | SO minimo | BLOQUEADO | VM Server 2008 R2 SP1 ausente |
 
