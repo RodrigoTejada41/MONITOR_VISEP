@@ -1,0 +1,13 @@
+/tools/
+/artifacts/
+/build/
+/data/
+/Inventario/
+__pycache__/
+*.py[cod]
+*.user
+*.suo
+*.sql
+*.rar
+*.zip
+!database/*.sql

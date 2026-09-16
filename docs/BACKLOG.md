@@ -1,0 +1,18 @@
+# Backlog
+
+Atualizado em 2026-09-16. Resultados e comandos em RETOMADA.md.
+
+| ID | Escopo | Estado | Evidencia / pendencia |
+|---|---|---|---|
+| TASK-001 | Documentacao 001-011 | EM VALIDACAO | Escopo, mapa legado e checkpoint atualizados; specs nao homologadas integralmente |
+| TASK-002 | Dominio/persistencia/autorizacao | EM VALIDACAO | src/Core, testes CoreTests; XML somente demonstrador |
+| TASK-003 | Desktop | EM VALIDACAO | Fluxo completo DesktopE2E passou; inspecao visual da ocorrencia encerrada |
+| TASK-004 | Recepcao simulada | EM VALIDACAO | Console, dedup e quarentena passaram; instalacao SCM pendente |
+| TASK-005 | Build/scripts/inspector | EM VALIDACAO | Build e 32 assertions integradas passaram; instalador nao homologado |
+| TASK-006 | Validacao integrada | EM VALIDACAO | Core, integracao e E2E executados; percentual de cobertura nao medido |
+| TASK-007 | Manual e checkpoint | CONCLUIDA | OPERACAO.md, RETOMADA.md e matrizes atualizados nesta rodada |
+| TASK-008 | Banco servidor/migracao | BLOQUEADO | Backup disponivel; falta fixar versoes, validar semantica e implementar importador/reconciliacao |
+| TASK-009 | SG real | BLOQUEADO | Manual/protocolo e receptor laboratorio ausentes |
+| TASK-010 | SO minimo | BLOQUEADO | VM Server 2008 R2 SP1 ausente |
+
+Aprovacao do demonstrador nao conclui specs de producao, migracao ou receptor real.
