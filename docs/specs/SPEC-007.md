@@ -1,33 +1,23 @@
 # SPEC-007 — Atendimento de ocorrências
 
-Versão: 0.1. Estado: RASCUNHO.
-Responsável: desktop. Revisor: qualidade.
+Versão: 0.2. Estado: EM VALIDAÇÃO. Revisão: 2026-09-16.
 
 ## Objetivo e limites
-Assumir, registrar ação e encerrar com justificativa. Não inclui alegação de produção pronta.
 
-## Evidências disponíveis
-Planos fornecidos e inspeção inicial de projeto vazio. Compatibilidade documental em COMPATIBILIDADE_WINDOWS.md. Implementação e testes ainda não constituem evidência nesta revisão inicial.
+Entregar o escopo de atendimento de ocorrências com evidência reproduzível. Estado refere-se ao escopo completo; não equivale a homologação de produção.
 
-## Requisitos funcionais e não funcionais
-Assumir, registrar ação e encerrar com justificativa. Operação local, entradas validadas, erros explícitos, preservação de dados e separação de responsabilidades.
+## Implementação e evidências
 
-## Regras de negócio
-Não gravar no BYKOM. Não confundir evento, ocorrência, atendimento e ACK. Nenhum fluxo marcado real quando simulado. Autorizar ações na aplicação.
+Claim/AddAction/Close conectados à UI, autorizados e auditados. Core confirma fluxo, ocorrência encerrada e exatamente um vencedor na corrida de operadores.
 
-## Dados e interfaces
-Modelos próprios e contratos descritos em ARQUITETURA.md. Nomes/campos legados somente após inspeção autorizada. Arquivos de responsabilidade e vínculo com código em BACKLOG.md e RASTREABILIDADE.md.
+## Critérios de aceite pendentes e riscos
 
-## Cenários de falha
-Dois operadores assumem; fechamento sem motivo. Registrar erro sem dados pessoais e preservar estado anterior válido.
+Testar motivo vazio, ação antes de assumir e operador diferente do responsável. Reexecutar E2E e homologar com evento real após SPEC-006. Concorrência local não comprova múltiplas estações.
 
-## Critérios de aceite verificáveis
-Um único vencedor concorrente e histórico completo. Registrar comando, resultado e limitações. Não concluir a spec enquanto critérios dependentes de ambiente estiverem pendentes.
+Cada verificação pendente exige comando/cenário, ambiente, resultado esperado e resultado obtido. Só concluir após todos os critérios aplicáveis passarem; dependências externas continuam explícitas.
 
-## Estratégia de teste
-Dados sintéticos em armazenamento isolado; cenários positivos e negativos do PLANO_TESTES.md; revisão de outro autor quando disponível.
+## Rastreabilidade
 
-## Dependências, dúvidas e bloqueios
-Autorização e transação. Ausências externas não impedem o demonstrador independente.
+src/Core/Store.cs; src/Desktop/Program.cs; tests/CoreTests.cs; tests/DesktopE2E.py.
 
-Fluxo permitido: RASCUNHO → PRONTA PARA IMPLEMENTAÇÃO → EM IMPLEMENTAÇÃO → EM VALIDAÇÃO → CONCLUÍDA.
+Ver [matriz das specs](README.md) e [retomada](../RETOMADA.md). Preservar dados originais; executar testes com destinos isolados. Eventos simulados devem continuar identificados como simulação.

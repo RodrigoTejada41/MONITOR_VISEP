@@ -13,4 +13,6 @@ Revisao 2026-09-16. Detalhes dos resultados em RETOMADA.md e PLANO_TESTES.md.
 | Relatorios | Store.cs, Desktop/Program.cs | Exportacao automatizada; ver PLANO_TESTES.md |
 | Inspecao legado | src/Migration/InspectProgram.cs | Fixture SQL sintetica aprovada; mapa legado textual disponivel |
 | Integracao SG | Adaptador real ausente | Bloqueado por protocolo/receptor |
-| Migracao | Importador ausente | Backup identificado, implementacao e reconciliacao pendentes |
+| Migracao | src/Migration/import_legacy.py, sql_dump.py | 16 testes Python e 27 assertions LegacyHistory passaram; reconciliacao real pendente |
+
+Matriz individual das 11 specs e criterios pendentes em [specs/README.md](specs/README.md). Insumos e conexao historica SG3 em [evidencias/README.md](evidencias/README.md). Resultados Core/Python/LegacyHistory foram reexecutados no checkpoint; IntegrationTests/DesktopE2E permanecem evidencias historicas.

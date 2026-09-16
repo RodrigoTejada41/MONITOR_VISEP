@@ -2,7 +2,10 @@
 /artifacts/
 /build/
 /data/
-/Inventario/
+/Inventario/*
+!/Inventario/README.md
+!/Inventario/Documentacao_Integracao_SurGard_SG3_Substituicao_BYKOM.docx
+!/Inventario/Modelo/
 __pycache__/
 *.py[cod]
 *.user

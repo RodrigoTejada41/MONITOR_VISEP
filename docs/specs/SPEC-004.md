@@ -1,33 +1,23 @@
 # SPEC-004 — Cadastros
 
-Versão: 0.1. Estado: RASCUNHO.
-Responsável: desktop. Revisor: qualidade.
+Versão: 0.2. Estado: EM IMPLEMENTAÇÃO. Revisão: 2026-09-16.
 
 ## Objetivo e limites
-Clientes, locais, contas, contatos, equipamentos, partições e zonas. Não inclui alegação de produção pronta.
 
-## Evidências disponíveis
-Planos fornecidos e inspeção inicial de projeto vazio. Compatibilidade documental em COMPATIBILIDADE_WINDOWS.md. Implementação e testes ainda não constituem evidência nesta revisão inicial.
+Entregar o escopo de cadastros com evidência reproduzível. Estado refere-se ao escopo completo; não equivale a homologação de produção.
 
-## Requisitos funcionais e não funcionais
-Clientes, locais, contas, contatos, equipamentos, partições e zonas. Operação local, entradas validadas, erros explícitos, preservação de dados e separação de responsabilidades.
+## Implementação e evidências
 
-## Regras de negócio
-Não gravar no BYKOM. Não confundir evento, ocorrência, atendimento e ACK. Nenhum fluxo marcado real quando simulado. Autorizar ações na aplicação.
+Store.AddClient autoriza Admin, valida nome/conta, rejeita conta duplicada e limita campos. Desktop cadastra e consulta. Core testa cadastro e associação de ocorrência.
 
-## Dados e interfaces
-Modelos próprios e contratos descritos em ARQUITETURA.md. Nomes/campos legados somente após inspeção autorizada. Arquivos de responsabilidade e vínculo com código em BACKLOG.md e RASTREABILIDADE.md.
+## Critérios de aceite pendentes e riscos
 
-## Cenários de falha
-Conta duplicada, campos inválidos, referência inexistente. Registrar erro sem dados pessoais e preservar estado anterior válido.
+Testar explicitamente duplicatas, campos vazios e limites. Implementar edição/inativação e entidades estruturadas para locais, contatos, equipamentos, partições e zonas. Hoje contatos/equipamentos/zonas são texto, não CRUD relacionado completo.
 
-## Critérios de aceite verificáveis
-Cadastrar, consultar e rejeitar dados inválidos. Registrar comando, resultado e limitações. Não concluir a spec enquanto critérios dependentes de ambiente estiverem pendentes.
+Cada verificação pendente exige comando/cenário, ambiente, resultado esperado e resultado obtido. Só concluir após todos os critérios aplicáveis passarem; dependências externas continuam explícitas.
 
-## Estratégia de teste
-Dados sintéticos em armazenamento isolado; cenários positivos e negativos do PLANO_TESTES.md; revisão de outro autor quando disponível.
+## Rastreabilidade
 
-## Dependências, dúvidas e bloqueios
-Contratos de domínio. Ausências externas não impedem o demonstrador independente.
+src/Core/Models.cs; src/Core/Store.cs; src/Desktop/Program.cs; tests/CoreTests.cs.
 
-Fluxo permitido: RASCUNHO → PRONTA PARA IMPLEMENTAÇÃO → EM IMPLEMENTAÇÃO → EM VALIDAÇÃO → CONCLUÍDA.
+Ver [matriz das specs](README.md) e [retomada](../RETOMADA.md). Preservar dados originais; executar testes com destinos isolados. Eventos simulados devem continuar identificados como simulação.

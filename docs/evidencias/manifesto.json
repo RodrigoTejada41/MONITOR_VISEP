@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-09-16T19:54:02.2018967Z",
+  "repository_visibility": "PUBLIC",
+  "scope": "Selected source fingerprints and aggregate private directory sizes; not a full backup",
+  "sources": [
+    {
+      "path": "Inventario/bykom.sql",
+      "bytes": 663570312,
+      "sha256": "FC375F7D2DB0411072B5580E5CBB5BE4F34FD931C63A76BEC1BC33E14AE6712F",
+      "distribution": "private_local"
+    },
+    {
+      "path": "Inventario/bykom.rar",
+      "bytes": 56482968,
+      "sha256": "690BDD34A1ABC5DDAC11AFDAFE00D9CA58FDCB53CBA4D4C6E75C387E0AEE6075",
+      "distribution": "private_local"
+    },
+    {
+      "path": "Inventario/Config_Backup/Server.rar",
+      "bytes": 5578,
+      "sha256": "03DC3037E57B67734FBF50F78F330AC2A9C81BBB6F4B11E02AD6B59B67506F57",
+      "distribution": "private_local"
+    },
+    {
+      "path": "Inventario/05_Conexoes.txt",
+      "bytes": 7849,
+      "sha256": "046B943E0E5F82E753E4950E87E8004FFA1DC53144EA0A877E3ADB5E8D9FEC7A",
+      "distribution": "private_local"
+    },
+    {
+      "path": "Inventario/06_Processos_Servicos.txt",
+      "bytes": 7218,
+      "sha256": "893CBC783FDEA09A58379B2AD52551A8E051E7C9B58CE1E394D2BADFE3BCA700",
+      "distribution": "private_local"
+    },
+    {
+      "path": "Inventario/Documentacao_Integracao_SurGard_SG3_Substituicao_BYKOM.docx",
+      "bytes": 42922,
+      "sha256": "AA7837A2754F9D1E56C32883B0BEEB17AF9444DA073968D22D0EA1890A500066",
+      "distribution": "git"
+    },
+    {
+      "path": "Inventario/Modelo/ioBroker.sia-master/LICENSE",
+      "bytes": 1105,
+      "sha256": "1CCFFAEB0014D52BD247313FD7CAD0A1C03BB11F94017ACDA0F838FDCB57D678",
+      "distribution": "git"
+    },
+    {
+      "path": "Inventario/Modelo/ioBroker.sia-master/package.json",
+      "bytes": 2527,
+      "sha256": "36468767F558CA38F18C0B1A7A8248EAFB95CB8356199645F97CFC7A49FF8044",
+      "distribution": "git"
+    },
+    {
+      "path": "Inventario/Modelo/ioBroker.sia-master/src/lib/sia.ts",
+      "bytes": 34087,
+      "sha256": "3DCC693C0DF1F02DFD5F9CFE153A7A5CB7AF3AD3F8FC9059989B8D762212C800",
+      "distribution": "git"
+    }
+  ],
+  "groups": [
+    {
+      "path": "Inventario/Config_Backup",
+      "files": 4639,
+      "bytes": 1320985253
+    },
+    {
+      "path": "Inventario/sql",
+      "files": 4,
+      "bytes": 615372
+    },
+    {
+      "path": "Inventario/Modelo",
+      "files": 61,
+      "bytes": 1754901
+    },
+    {
+      "path": "tools",
+      "files": 27,
+      "bytes": 720589180
+    },
+    {
+      "path": "build",
+      "files": 9,
+      "bytes": 104868
+    }
+  ]
+}

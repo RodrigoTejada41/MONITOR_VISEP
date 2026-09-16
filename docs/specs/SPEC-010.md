@@ -1,33 +1,23 @@
-# SPEC-010 — Instalação atualização recuperação
+# SPEC-010 — Instalação, atualização e recuperação
 
-Versão: 0.1. Estado: RASCUNHO.
-Responsável: operacao. Revisor: qualidade.
+Versão: 0.2. Estado: EM VALIDAÇÃO. Revisão: 2026-09-16.
 
 ## Objetivo e limites
-Scripts locais, serviço e cópia de segurança. Não inclui alegação de produção pronta.
 
-## Evidências disponíveis
-Planos fornecidos e inspeção inicial de projeto vazio. Compatibilidade documental em COMPATIBILIDADE_WINDOWS.md. Implementação e testes ainda não constituem evidência nesta revisão inicial.
+Entregar o escopo de instalação, atualização e recuperação com evidência reproduzível. Estado refere-se ao escopo completo; não equivale a homologação de produção.
 
-## Requisitos funcionais e não funcionais
-Scripts locais, serviço e cópia de segurança. Operação local, entradas validadas, erros explícitos, preservação de dados e separação de responsabilidades.
+## Implementação e evidências
 
-## Regras de negócio
-Não gravar no BYKOM. Não confundir evento, ocorrência, atendimento e ACK. Nenhum fluxo marcado real quando simulado. Autorizar ações na aplicação.
+Install cria serviço LocalService e ACLs; Backup/Restore existem. Integração histórica registra backup/hash e rejeição de formato inválido. Receiver possui ServiceBase.
 
-## Dados e interfaces
-Modelos próprios e contratos descritos em ARQUITETURA.md. Nomes/campos legados somente após inspeção autorizada. Arquivos de responsabilidade e vínculo com código em BACKLOG.md e RASTREABILIDADE.md.
+## Critérios de aceite pendentes e riscos
 
-## Cenários de falha
-Falha de privilégio, caminho errado e perda em atualização. Registrar erro sem dados pessoais e preservar estado anterior válido.
+Instalar/iniciar/parar/reiniciar via SCM em VM; testar atualização/rollback e reexecutar restauração em destino novo com contagens/hash. Reaplicar ACL do serviço no restaurado. Serviço não foi instalado/testado via SCM nesta revisão e continua simulador.
 
-## Critérios de aceite verificáveis
-Instalar, reiniciar e restaurar em ambiente isolado. Registrar comando, resultado e limitações. Não concluir a spec enquanto critérios dependentes de ambiente estiverem pendentes.
+Cada verificação pendente exige comando/cenário, ambiente, resultado esperado e resultado obtido. Só concluir após todos os critérios aplicáveis passarem; dependências externas continuam explícitas.
 
-## Estratégia de teste
-Dados sintéticos em armazenamento isolado; cenários positivos e negativos do PLANO_TESTES.md; revisão de outro autor quando disponível.
+## Rastreabilidade
 
-## Dependências, dúvidas e bloqueios
-Binários e runtime. Ausências externas não impedem o demonstrador independente.
+scripts/Install.ps1; scripts/Backup.ps1; scripts/Restore.ps1; tests/IntegrationTests.ps1; docs/OPERACAO.md.
 
-Fluxo permitido: RASCUNHO → PRONTA PARA IMPLEMENTAÇÃO → EM IMPLEMENTAÇÃO → EM VALIDAÇÃO → CONCLUÍDA.
+Ver [matriz das specs](README.md) e [retomada](../RETOMADA.md). Preservar dados originais; executar testes com destinos isolados. Eventos simulados devem continuar identificados como simulação.

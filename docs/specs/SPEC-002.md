@@ -1,33 +1,23 @@
 # SPEC-002 — Arquitetura e interfaces
 
-Versão: 0.1. Estado: RASCUNHO.
-Responsável: arquitetura. Revisor: revisor.
+Versão: 0.2. Estado: EM IMPLEMENTAÇÃO. Revisão: 2026-09-16.
 
 ## Objetivo e limites
-Domínio separado de UI, persistência, recepção e inspeção. Não inclui alegação de produção pronta.
 
-## Evidências disponíveis
-Planos fornecidos e inspeção inicial de projeto vazio. Compatibilidade documental em COMPATIBILIDADE_WINDOWS.md. Implementação e testes ainda não constituem evidência nesta revisão inicial.
+Entregar o escopo de arquitetura e interfaces com evidência reproduzível. Estado refere-se ao escopo completo; não equivale a homologação de produção.
 
-## Requisitos funcionais e não funcionais
-Domínio separado de UI, persistência, recepção e inspeção. Operação local, entradas validadas, erros explícitos, preservação de dados e separação de responsabilidades.
+## Implementação e evidências
 
-## Regras de negócio
-Não gravar no BYKOM. Não confundir evento, ocorrência, atendimento e ACK. Nenhum fluxo marcado real quando simulado. Autorizar ações na aplicação.
+Core, Desktop, Receiver e Migration separados. Receiver consome inbox XML sem depender da UI; integração independente possui evidência histórica.
 
-## Dados e interfaces
-Modelos próprios e contratos descritos em ARQUITETURA.md. Nomes/campos legados somente após inspeção autorizada. Arquivos de responsabilidade e vínculo com código em BACKLOG.md e RASTREABILIDADE.md.
+## Critérios de aceite pendentes e riscos
 
-## Cenários de falha
-Acoplamento e UI interrompendo recepção. Registrar erro sem dados pessoais e preservar estado anterior válido.
+Formalizar contratos de transporte/parser/repositório servidor. Store depende do XmlRepository concreto. Demonstrar recepção real com desktop fechado e supervisionar falhas de I/O hoje repetidas sem diagnóstico suficiente.
 
-## Critérios de aceite verificáveis
-Compilar componentes e testar serviço sem desktop. Registrar comando, resultado e limitações. Não concluir a spec enquanto critérios dependentes de ambiente estiverem pendentes.
+Cada verificação pendente exige comando/cenário, ambiente, resultado esperado e resultado obtido. Só concluir após todos os critérios aplicáveis passarem; dependências externas continuam explícitas.
 
-## Estratégia de teste
-Dados sintéticos em armazenamento isolado; cenários positivos e negativos do PLANO_TESTES.md; revisão de outro autor quando disponível.
+## Rastreabilidade
 
-## Dependências, dúvidas e bloqueios
-Contratos compartilhados. Ausências externas não impedem o demonstrador independente.
+src/Core/Store.cs; src/Core/XmlRepository.cs; src/Receiver/ReceiverProgram.cs.
 
-Fluxo permitido: RASCUNHO → PRONTA PARA IMPLEMENTAÇÃO → EM IMPLEMENTAÇÃO → EM VALIDAÇÃO → CONCLUÍDA.
+Ver [matriz das specs](README.md) e [retomada](../RETOMADA.md). Preservar dados originais; executar testes com destinos isolados. Eventos simulados devem continuar identificados como simulação.

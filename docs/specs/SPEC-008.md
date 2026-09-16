@@ -1,33 +1,23 @@
-# SPEC-008 — Usuários permissões auditoria
+# SPEC-008 — Usuários, permissões e auditoria
 
-Versão: 0.1. Estado: RASCUNHO.
-Responsável: seguranca. Revisor: revisor.
+Versão: 0.2. Estado: EM VALIDAÇÃO. Revisão: 2026-09-16.
 
 ## Objetivo e limites
-Autenticação antes da UI; perfis e auditoria em operações. Não inclui alegação de produção pronta.
 
-## Evidências disponíveis
-Planos fornecidos e inspeção inicial de projeto vazio. Compatibilidade documental em COMPATIBILIDADE_WINDOWS.md. Implementação e testes ainda não constituem evidência nesta revisão inicial.
+Entregar o escopo de usuários, permissões e auditoria com evidência reproduzível. Estado refere-se ao escopo completo; não equivale a homologação de produção.
 
-## Requisitos funcionais e não funcionais
-Autenticação antes da UI; perfis e auditoria em operações. Operação local, entradas validadas, erros explícitos, preservação de dados e separação de responsabilidades.
+## Implementação e evidências
 
-## Regras de negócio
-Não gravar no BYKOM. Não confundir evento, ocorrência, atendimento e ACK. Nenhum fluxo marcado real quando simulado. Autorizar ações na aplicação.
+Login precede MainForm. PBKDF2 com salt aleatório e 100000 iterações; Admin/Operator/Viewer e bloqueio persistido. Core testa acessos negados, auditoria e bloqueio após reinício do Store.
 
-## Dados e interfaces
-Modelos próprios e contratos descritos em ARQUITETURA.md. Nomes/campos legados somente após inspeção autorizada. Arquivos de responsabilidade e vínculo com código em BACKLOG.md e RASTREABILIDADE.md.
+## Critérios de aceite pendentes e riscos
 
-## Cenários de falha
-Senha exposta ou escalada de privilégio. Registrar erro sem dados pessoais e preservar estado anterior válido.
+Definir/testar troca, recuperação e revogação de credenciais/sessões; verificar ACLs em instalação real. Auditoria compartilha XML e não é inviolável contra escrita direta. Não importar credenciais BYKOM nem documentar senhas.
 
-## Critérios de aceite verificáveis
-Senha derivada e ações não autorizadas negadas. Registrar comando, resultado e limitações. Não concluir a spec enquanto critérios dependentes de ambiente estiverem pendentes.
+Cada verificação pendente exige comando/cenário, ambiente, resultado esperado e resultado obtido. Só concluir após todos os critérios aplicáveis passarem; dependências externas continuam explícitas.
 
-## Estratégia de teste
-Dados sintéticos em armazenamento isolado; cenários positivos e negativos do PLANO_TESTES.md; revisão de outro autor quando disponível.
+## Rastreabilidade
 
-## Dependências, dúvidas e bloqueios
-Contrato de sessão. Ausências externas não impedem o demonstrador independente.
+src/Core/PasswordSecurity.cs; src/Core/Store.cs; src/Desktop/Program.cs; scripts/Install.ps1; tests/CoreTests.cs.
 
-Fluxo permitido: RASCUNHO → PRONTA PARA IMPLEMENTAÇÃO → EM IMPLEMENTAÇÃO → EM VALIDAÇÃO → CONCLUÍDA.
+Ver [matriz das specs](README.md) e [retomada](../RETOMADA.md). Preservar dados originais; executar testes com destinos isolados. Eventos simulados devem continuar identificados como simulação.

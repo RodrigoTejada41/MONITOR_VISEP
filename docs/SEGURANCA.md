@@ -6,4 +6,6 @@ Arquivo de dados e backup contêm dados pessoais e hashes: restringir ACL NTFS. 
 
 Não registrar senhas ou conteúdo pessoal em logs de erro. CSV deve neutralizar células com início de fórmula e escapar aspas, separadores e quebras. SQL futuro parametrizado. Não tocar Hardlock/Hardkey.
 
-Testes obrigatórios: autenticação inválida, salt distinto, negação de ações por perfil, sessão inválida, corrida de atendimento, dados inválidos e exportação maliciosa. A liberação depende de revisão independente e de evidências; ainda pendentes nesta documentação inicial.
+CoreTests cobre autenticacao, negacao por perfil/sessao, bloqueio persistido, corrida de atendimento e CSV adversarial. Cobertura percentual e homologacao de instalacao continuam pendentes. Revisao estatica de publicacao nao equivale a auditoria integral de seguranca do produto.
+
+Repositorio PUBLIC: nao versionar dumps de clientes, credenciais, licencas proprietarias ou configuracoes privadas. Referencias liberadas e manifesto em Inventario/README.md e docs/evidencias/README.md. Configurar repositorio privado no futuro nao substitui tratamento de segredos.

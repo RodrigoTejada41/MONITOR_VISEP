@@ -1,33 +1,23 @@
 # SPEC-001 — Ambiente e compatibilidade Windows
 
-Versão: 0.1. Estado: RASCUNHO.
-Responsável: arquitetura. Revisor: qualidade.
+Versão: 0.2. Estado: EM VALIDAÇÃO. Revisão: 2026-09-16.
 
 ## Objetivo e limites
-Build Framework4.7.2 com referências explícitas e inventário de SO. Não inclui alegação de produção pronta.
 
-## Evidências disponíveis
-Planos fornecidos e inspeção inicial de projeto vazio. Compatibilidade documental em COMPATIBILIDADE_WINDOWS.md. Implementação e testes ainda não constituem evidência nesta revisão inicial.
+Entregar o escopo de ambiente e compatibilidade windows com evidência reproduzível. Estado refere-se ao escopo completo; não equivale a homologação de produção.
 
-## Requisitos funcionais e não funcionais
-Build Framework4.7.2 com referências explícitas e inventário de SO. Operação local, entradas validadas, erros explícitos, preservação de dados e separação de responsabilidades.
+## Implementação e evidências
 
-## Regras de negócio
-Não gravar no BYKOM. Não confundir evento, ocorrência, atendimento e ACK. Nenhum fluxo marcado real quando simulado. Autorizar ações na aplicação.
+Build C# 5/.NET Framework 4.7.2 com referências explícitas e warnings como erros implementado. Build, Core (46 assertions) e LegacyHistory (27) passaram neste checkpoint.
 
-## Dados e interfaces
-Modelos próprios e contratos descritos em ARQUITETURA.md. Nomes/campos legados somente após inspeção autorizada. Arquivos de responsabilidade e vínculo com código em BACKLOG.md e RASTREABILIDADE.md.
+## Critérios de aceite pendentes e riscos
 
-## Cenários de falha
-Incompatibilidade runtime/instalador. Registrar erro sem dados pessoais e preservar estado anterior válido.
+Homologar instalação, login e reinício em VM Server 2008 R2 SP1, registrando runtime e versão do SO. Compilar localmente não comprova compatibilidade no servidor. Python da migração é dependência separada.
 
-## Critérios de aceite verificáveis
-Compilar e executar no SO mínimo. Registrar comando, resultado e limitações. Não concluir a spec enquanto critérios dependentes de ambiente estiverem pendentes.
+Cada verificação pendente exige comando/cenário, ambiente, resultado esperado e resultado obtido. Só concluir após todos os critérios aplicáveis passarem; dependências externas continuam explícitas.
 
-## Estratégia de teste
-Dados sintéticos em armazenamento isolado; cenários positivos e negativos do PLANO_TESTES.md; revisão de outro autor quando disponível.
+## Rastreabilidade
 
-## Dependências, dúvidas e bloqueios
-VM Server2008 R2 SP1. Ausências externas não impedem o demonstrador independente.
+scripts/Build.ps1; docs/COMPATIBILIDADE_WINDOWS.md.
 
-Fluxo permitido: RASCUNHO → PRONTA PARA IMPLEMENTAÇÃO → EM IMPLEMENTAÇÃO → EM VALIDAÇÃO → CONCLUÍDA.
+Ver [matriz das specs](README.md) e [retomada](../RETOMADA.md). Preservar dados originais; executar testes com destinos isolados. Eventos simulados devem continuar identificados como simulação.

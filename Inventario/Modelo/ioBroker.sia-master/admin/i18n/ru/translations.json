@@ -1,0 +1,20 @@
+{
+    "Path for saving SIA messages": "Путь для сохранения сообщений SIA",
+    "ACK Timeout": "ACK Timeout",
+    "AES encrypting": "AES шифрует",
+    "AES password": "AES пароль",
+    "AES password in Hex": "Пароль AES в формате шестигранника",
+    "Accountnumber": "номер счета",
+    "Listen IP": "Ip-address",
+    "Main settings": "Основные настройки",
+    "Listen Port": "Порт",
+    "Accounts": "Счета",
+    "alarmsystem": "тревога",
+    "bind": "Свяжите ip-address",
+    "on save adapter restarts with new config immediately": "При сохранении адаптера перезагружается с новой конфигурацией немедленно",
+    "subscriber": "Подписчик",
+    "Save incomming SIA messages": "Сохранить сообщения SIA SIA",
+    "Main Settings": "Основные настройки",
+    "List of Accounts": "Список учетных записей",
+    "Connection close by SIA Server": "Соединение рядом с сервером SIA"
+}

@@ -1,0 +1,146 @@
+{
+    "i18n": true,
+    "type": "tabs",
+    "items": {
+        "_options": {
+            "type": "panel",
+            "label": "Main Settings",
+            "items": {
+                "bind": {
+                    "newLine": true,
+                    "type": "ip",
+                    "listenOnAllPorts": true,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4,
+                    "xs": 12,
+                    "label": "Listen IP"
+                },
+                "port": {
+                    "type": "number",
+                    "min": 1,
+                    "max": 65535,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4,
+                    "xs": 12,
+                    "label": "Listen Port"
+                },
+                "timeout": {
+                    "type": "number",
+                    "min": 0,
+                    "max": 1000,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4,
+                    "xs": 12,
+                    "label": "ACK Timeout",
+                    "newLine": true
+                },
+                "sockend": {
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4,
+                    "xs": 12,
+                    "label": "Connection close by SIA Server"
+                },
+                "path": {
+                    "newLine": true,
+                    "type": "text",
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4,
+                    "xs": 12,
+                    "help": "Path for saving SIA messages",
+                    "validator": "!data.save || data.path",
+                    "validatorNoSaveOnError": true
+                },
+                "save": {
+                    "type": "checkbox",
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4,
+                    "xs": 12,
+                    "label": "Save incomming SIA messages",
+                    "tooltip": "Save incomming SIA messages"
+                }
+            }
+        },
+        "_accounts": {
+            "type": "panel",
+            "label": "Accounts",
+            "items": {
+                "keys": {
+                    "type": "table",
+                    "sm": 12,
+                    "md": 11,
+                    "lg": 10,
+                    "xl": 10,
+                    "xs": 12,
+                    "label": "List of Accounts",
+                    "items": [
+                        {
+                            "type": "text",
+                            "attr": "accountnumber",
+                            "width": "40%",
+                            "title": "Accountnumber",
+                            "tooltip": "Accountnumber",
+                            "filter": false,
+                            "sort": false,
+                            "style": {
+                                "width": "calc(100%)"
+                            }
+                        },
+                        {
+                            "type": "password",
+                            "attr": "password",
+                            "width": "40%",
+                            "title": "AES password",
+                            "tooltip": "AES password",
+                            "filter": false,
+                            "sort": false,
+                            "style": {
+                                "width": "calc(100%)"
+                            },
+                            "visible": true,
+                            "repeat": false,
+                            "disabled": "data.aes === false"
+                        },
+                        {
+                            "type": "checkbox",
+                            "attr": "aes",
+                            "width": "40%",
+                            "title": "AES encrypting",
+                            "tooltip": "AES encrypting",
+                            "filter": false,
+                            "sort": false,
+                            "style": {
+                                "width": "calc(100%)"
+                            }
+                        },
+                        {
+                            "type": "checkbox",
+                            "attr": "hex",
+                            "width": "40%",
+                            "title": "AES password in Hex",
+                            "tooltip": "AES password in Hex",
+                            "filter": false,
+                            "sort": false,
+                            "style": {
+                                "width": "calc(100%)"
+                            },
+                            "disabled": "data.aes === false"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -8,7 +8,8 @@ Ancora do codigo e da analise SG3: `5b4a104b37579c37128af75582ad68eb030e2a2c`, p
 
 1. Este arquivo, INTEGRACAO_SG_SYSTEM_III.md e COMPARACAO_SG3_MODELO.md.
 2. TESTE_BYKOM.md, scripts/Build.ps1 e scripts/Import-Legacy.ps1 para fluxo existente.
-3. BACKLOG.md e specs sao planejamento historico; confrontar com o codigo atual e evidencias antes de repetir trabalho.
+3. ORGANOGRAMA.md, specs/README.md e BACKLOG.md: revisados contra o codigo; 5 specs em implementacao, 6 em validacao, nenhuma concluida.
+4. evidencias/README.md e evidencias/manifesto.json: referencias preservadas e hashes de insumos privados.
 
 Usuario confirmou: Windows Server 2008 R2; ligacao SG3/BYKOM por rede; Printer Log continua recebendo eventos. Objetivo: manter receptora SG3 e concluir a central de monitoramento substituta do BYKOM.
 
@@ -18,7 +19,9 @@ O modelo Inventario/Modelo/ioBroker.sia-master implementa DC-09, nao comprova pr
 
 Proximo passo da integracao: obter a especificacao aplicavel e/ou capturas autorizadas para framing, ACK, heartbeat e retransmissoes. Preparar journal duravel, replay e contratos de transporte/parser sem alterar producao. Depois implementar cliente TCP segundo protocolo confirmado, com persistencia antes de confirmacao quando exigido pelo contrato. Usuario pediu neste turno preservacao/commit, nao conexao ao equipamento.
 
-Preservacao: Inventario, tools, data e build sao locais e ignorados no Git; contem originais, dados ou artefatos. O commit preserva codigo, scripts, testes e documentacao, mas nao substitui backup dessas pastas. Outra IA nesta maquina pode usa-las; em outra maquina sera necessario copiar o inventario e os dados de forma protegida. Usuario forneceu o remoto para guardar este checkpoint.
+Preservacao: repositorio PUBLIC verificado. DOCX SG3 e modelo MIT de Inventario agora sao versionados por excecoes explicitas; configuracoes BYKOM, SQL, RAR, planilhas, logs integrais, tools, data e build continuam locais. Conhecimento tecnico de tools consolidado em ARQUITETURA.md. O manifesto registra hashes/tamanhos, nao e backup. Outra maquina precisa receber insumos privados por canal restrito; nenhuma credencial ou dado de cliente deve ir ao Git publico.
+
+Ultimo pedido: registrar e publicar contexto tecnico, organograma e revisao das specs. Codigo funcional mantido; nenhuma conexao SG3/alteracao de producao. Originais privados preservados. O README e a entrada de retomada para outra IA.
 
 Validacao do checkpoint: scripts/Build.ps1 -Test passou com 46 assertions Core e 27 de historico legado; python -m unittest discover -s tests -p 'test_*.py' passou com 16 testes. E2E desktop, integracao PowerShell e receptor real nao reexecutados nesta rodada.
 
