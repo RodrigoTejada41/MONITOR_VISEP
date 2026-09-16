@@ -64,6 +64,16 @@ try {
     [xml]$state = Get-Content -LiteralPath $dataFile -Raw
     Assert-True (@($state.Visep.Incidents.Incident).Count -eq 1) 'Mensagem invalida persistida.'
 
+    $journalDirectory = Join-Path $inbox 'journal'
+    Assert-True (Test-Path -LiteralPath $journalDirectory) 'Journal duravel ausente.'
+    $journalBefore = @(Get-ChildItem -LiteralPath $journalDirectory -File -Recurse)
+    Assert-True ($journalBefore.Count -gt 0) 'Journal vazio apos recepcao.'
+    & $receiver --replay $dataFile | Out-Null
+    # Invalid source messages remain in the journal and may make replay report failure.
+    [xml]$state = Get-Content -LiteralPath $dataFile -Raw
+    Assert-True (@($state.Visep.Incidents.Incident).Count -eq 1) 'Replay duplicou ocorrencia.'
+    Assert-True ($state.Visep.Incidents.Incident.Id -eq $incidentId) 'Replay alterou identidade.'
+
     $sql = Join-Path $sandbox 'synthetic.sql'
     @'
 -- Server version 5.7.44
@@ -91,6 +101,10 @@ CREATE VIEW sample_view AS SELECT id FROM sample;
     foreach ($entry in $manifest) {
         Assert-True ((Get-FileHash -LiteralPath (Join-Path $restored $entry.Path)).Hash -eq $entry.Sha256) ('Restore divergente: ' + $entry.Path)
     }
+    Assert-True (@($manifest | Where-Object { $_.Path -like 'inbox\journal\*' }).Count -gt 0) 'Backup omitiu journal.'
+    & $receiver --replay (Join-Path $restored 'data.xml') | Out-Null
+    [xml]$restoredState = Get-Content -LiteralPath (Join-Path $restored 'data.xml') -Raw
+    Assert-True (@($restoredState.Visep.Incidents.Incident).Count -eq 1) 'Replay restaurado duplicou ocorrencia.'
     Assert-Rejected { & (Join-Path $root 'scripts\Restore.ps1') -BackupDirectory $backup -Destination $restored } 'Restore sobrescreveu destino existente.'
     Add-Content -LiteralPath (Join-Path $backup 'data.xml') -Value 'tampered'
     $rejectedTarget = Join-Path $sandbox 'rejected'
