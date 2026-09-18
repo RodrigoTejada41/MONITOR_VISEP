@@ -2,7 +2,7 @@
 
 ## Evidência do servidor: script BYKOM ausente - 2026-09-18
 
-No servidor, a execução de `C:\Program Files\VISEP\scripts\Preparar-Importacao-BYKOM.ps1` retornou `CommandNotFoundException`. Portanto a instalação ativa não contém a entrega r16 com runtime portátil e scripts de migração, ou a atualização anterior não foi concluída. Não executar importação nem criar cópias manuais de scripts. Próxima ação: instalar `VISEP-Setup-20260918-r16.exe`, confirmar a existência do script e só então executar a prévia contra `C:\BACKUP_SQL\bykom.sql` com `-AllowControlSeparator`.
+No servidor, a execução de `C:\Program Files\VISEP\scripts\Preparar-Importacao-BYKOM.ps1` retornou `CommandNotFoundException`. As verificações posteriores confirmaram `False` para esse script e para `C:\Program Files\VISEP\runtime\python\python.exe`. Portanto a instalação ativa não contém a entrega r16 com runtime portátil e scripts de migração, ou a atualização anterior não foi concluída. Não executar importação nem criar cópias manuais de scripts. Próxima ação: instalar `VISEP-Setup-20260918-r16.exe`, confirmar a existência do script e só então executar a prévia contra `C:\BACKUP_SQL\bykom.sql` com `-AllowControlSeparator`.
 
 ## Atualização de documentação pública - 2026-09-18
 
