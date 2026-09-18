@@ -1,8 +1,14 @@
 # Retomada exata
 
+## Correcao PowerShell 2 e instalador r17 - 2026-09-18
+
+O r16 falhou no Server 2008 R2 ao carregar `[Xml.DtdProcessing]` no PowerShell 2, antes de instalar qualquer arquivo. O r17 substitui r16 e usa nomes .NET completos em `Installer.Common.ps1` e `Restore.ps1`. Artefato: `artifacts/VISEP-Setup-20260918-r17.exe`; SHA-256 `B6D6A73D426D3A3CD947C2A8E45C9D1873938FC4EB77A268C1F202E73BDA0F8A`. O payload foi conferido com 54 arquivos e contém `Preparar-Importacao-BYKOM.ps1`, Python portátil e os módulos de migração.
+
+Validação: RED reproduziu a abreviação XML incompatível; GREEN passou em `InstallerTests.ps1`. Também passaram build completo, Bootstrap 6, SG3 contínuo 19, parser 77, transporte 21, retenção 17, supervisão 23, captura 29, journal 23, Core 46, histórico legado 27, integração 60 e Python 17. Próxima ação no servidor: executar somente r17 como administrador; depois confirmar que o script e `runtime\python\python.exe` existem antes de gerar a prévia BYKOM.
+
 ## Evidência do servidor: script BYKOM ausente - 2026-09-18
 
-No servidor, a execução de `C:\Program Files\VISEP\scripts\Preparar-Importacao-BYKOM.ps1` retornou `CommandNotFoundException`. As verificações posteriores confirmaram `False` para esse script e para `C:\Program Files\VISEP\runtime\python\python.exe`. Portanto a instalação ativa não contém a entrega r16 com runtime portátil e scripts de migração, ou a atualização anterior não foi concluída. Não executar importação nem criar cópias manuais de scripts. Próxima ação: instalar `VISEP-Setup-20260918-r16.exe`, confirmar a existência do script e só então executar a prévia contra `C:\BACKUP_SQL\bykom.sql` com `-AllowControlSeparator`.
+No servidor, a execução de `C:\Program Files\VISEP\scripts\Preparar-Importacao-BYKOM.ps1` retornou `CommandNotFoundException`. As verificações posteriores confirmaram `False` para esse script e para `C:\Program Files\VISEP\runtime\python\python.exe`. O r16 tentou corrigir essa ausência, mas falhou antes da cópia por incompatibilidade XML com PowerShell 2. Não executar importação nem criar cópias manuais de scripts. A ação vigente está na seção r17 acima.
 
 ## Atualização de documentação pública - 2026-09-18
 
