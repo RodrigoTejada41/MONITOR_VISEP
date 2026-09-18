@@ -30,6 +30,12 @@ No primeiro acesso, informe usuario, senha de 12 a 256 caracteres e confirmacao 
 
 O receptor processa inbox com a interface fechada. Entradas seguem para processed ou quarantine. Fluxo exclusivamente SIMULACAO; nao implementa SG-System III.
 
+Entradas tambem sao preservadas em inbox/journal antes de interpretacao/persistencia. Para recuperacao controlada com receptor parado: `build\Visep.Receiver.exe --replay "caminho\data.xml"`. Ver JOURNAL_REPLAY.md antes de usar em uma copia restaurada; entradas rejeitadas produzem saida de falha.
+
+Supervisao: `build\Visep.Receiver.exe --health <datafile> [minimumFreeMiB] [stalePendingMinutes]`. Codigo 0 indica saudavel; codigo 1 exige intervencao. Valores padrao: 1024 MiB e 5 minutos.
+
+Retencao: pare o receptor, gere backup externo com `scripts\Backup.ps1`, execute `--retention <datafile> <backupDirectory> <cutoffUtc>` para previa e repita com `--apply`. Pending nunca e removido. Ver JOURNAL_REPLAY.md.
+
 ## Backup e restauracao
 
 Feche a interface e encerre o receptor:

@@ -28,7 +28,7 @@ def main():
         login.wait('visible', timeout=15)
         for name, value in [('Usuario','uiadmin'),('Senha',password),('Confirmacao (primeiro acesso)',password)]:
             login.child_window(auto_id=name, control_type='Edit').set_edit_text(value)
-        login.child_window(title='Entrar / Criar primeiro admin', control_type='Button').invoke()
+        login.child_window(title='Criar administrador', control_type='Button').invoke()
         window = app.window(title='VISEP - uiadmin (Admin)')
         window.wait('visible', timeout=20)
         def field(name,value): window.child_window(auto_id=name, control_type='Edit').set_edit_text(value)
@@ -59,8 +59,24 @@ def main():
             prompt.child_window(title='Confirmar',control_type='Button').invoke()
             wait_for(lambda: text in ET.tostring(ET.parse(data).getroot(),encoding='unicode'))
         assert ET.parse(data).find('./Incidents/Incident').get('Status') == 'Closed'
+        window.close()
+        app.wait_for_process_exit(timeout=10)
+        app = Application(backend='uia').start('"%s" "%s"' % (ROOT/'build/Visep.Desktop.exe', data))
+        login = app.window(title='VISEP - Autenticacao')
+        login.wait('visible', timeout=15)
+        assert not login.child_window(auto_id='Confirmacao (primeiro acesso)', control_type='Edit').exists(timeout=1)
+        assert not login.child_window(title='Criar administrador', control_type='Button').exists(timeout=1)
+        for name, value in [('Usuario','uiadmin'),('Senha',password)]:
+            login.child_window(auto_id=name, control_type='Edit').set_edit_text(value)
+        login.child_window(title='Entrar', control_type='Button').invoke()
+        window = app.window(title='VISEP - uiadmin (Admin)')
+        window.wait('visible', timeout=20)
+        displayed_path = window.child_window(auto_id='Base de dados', control_type='Edit').get_value()
+        assert pathlib.Path(displayed_path).samefile(data), displayed_path
+        assert len(ET.parse(data).findall('./Users/User')) == 1
+        assert ET.parse(data).find('./Incidents/Incident').get('Status') == 'Closed'
         window.capture_as_image().save(str(folder / 'completed.png'))
-        print('PASS: UI bootstrap, client, simulation, claim, action and close; artifacts:', folder)
+        print('PASS: UI bootstrap, client, simulation, claim, action, close, relogin and persistence; artifacts:', folder)
     except Exception:
         print('Failure artifacts:', folder, flush=True)
         if window is not None:

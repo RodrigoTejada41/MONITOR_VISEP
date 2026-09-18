@@ -1,6 +1,6 @@
 # Integração SG-System III
 
-Estado: somente SIMULAÇÃO. Não há especificação de protocolo confirmada.
+Estado: transporte e parser estrutural validados com captura real; serviço contínuo e conversão em ocorrência ainda não implementados.
 
 ## Evidencia de rede no inventario (revisada em 2026-09-16)
 
@@ -20,6 +20,14 @@ Necessário obter: fabricante/modelo/firmware, manual autorizado do protocolo, p
 
 O simulador exercita persistência e atendimento com protocolo interno explicitamente próprio. Não é emulador homologado do SG-System III e não deve enviar sinais à rede do receptor.
 
-Adaptador real futuro: parser incremental, mensagens parciais/múltiplas, reconexão, rastreio bruto protegido, retransmissões conforme identificadores comprovados, durabilidade antes de ACK quando o protocolo exigir, fila durável durante falha de banco e alarme de comunicação. Não eliminar sinais legítimos repetidos apenas por conteúdo igual.
+Captura controlada implementada em `src/Receiver/Sg3Transport.cs`: cliente TCP, parser incremental plain/B32, mensagens parciais/múltiplas, journal e envelope antes do ACK e falha sem ACK quando a persistência não conclui. `src/Receiver/Sg3Parser.cs` reconhece as três famílias presentes na captura real e `--sg3-analyze` valida envelopes sem exibir dados. Resultado: 230/230 capturas e 54/54 payloads únicos válidos. Conversão semântica em ocorrência, reconexão contínua, retransmissões, fila durante falha de banco e alarme de comunicação continuam pendentes.
 
 ACK técnico difere de assumir ocorrência pelo operador. UI fechada não pode parar serviço. Segundo consumidor em produção depende de validação explícita do comportamento do receptor.
+
+## Extracao de campos observados (2026-09-18)
+
+NumericFields fornece Account (quatro digitos, zeros preservados), EventCode (tres), Field2 (dois) e Field3 (tres) somente para o layout observado 501001/18. Qualifier continua literal E/R. Outros layouts retornam NumericFields null sem perder o parse estrutural. Os campos originais Receiver/Signal continuam disponiveis; o journal conserva os bytes.
+
+Confronto com Printer sustenta segmentacao textual, nao identifica cada evento nem prova significado dos sufixos. Nao deduplicar por hash ou Sequence; nao gerar ocorrencias automaticamente. Fixtures usam contas sinteticas. Capturas e logs reais permanecem privados em Inventario.
+
+Classificacao offline v1 implementada: veja [tabela e limites](CLASSIFICACAO_SG3.md). O analisador mostra categorias por captura; isso nao implementa politica de ocorrencias.

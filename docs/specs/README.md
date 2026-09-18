@@ -1,6 +1,6 @@
 # Matriz de especificações
 
-Revisão 2026-09-16, versão 0.2. Substitui rascunhos genéricos que descreviam projeto vazio. Revisão confrontada com src, scripts, tests e docs/RETOMADA.md.
+Revisão 2026-09-17, versão 0.2. Substitui rascunhos genéricos que descreviam projeto vazio. Revisão confrontada com src, scripts, tests e docs/RETOMADA.md.
 
 **Resultado: 5 specs em implementação, 6 em validação, nenhuma concluída.** A base local existe; produção continua dependente da integração SG3, banco servidor e homologação operacional.
 
@@ -22,9 +22,10 @@ Revisão 2026-09-16, versão 0.2. Substitui rascunhos genéricos que descreviam 
 
 | Comando/suíte | Evidência neste checkpoint | Limite |
 |---|---|---|
-| scripts/Build.ps1 -Test | PASS: 46 assertions Core + 27 LegacyHistory | Build local, não Server 2008 R2 |
+| scripts/Build.ps1 -Test | PASS: Retention16, Monitoring22, Capture29, Journal23, Core46, LegacyHistory27 | Build local, não Server 2008 R2 |
 | python -m unittest discover -s tests -p 'test_*.py' | PASS: 16 testes | Importação/parsing sintéticos |
-| tests/IntegrationTests.ps1 | Histórico: 32 assertions | Não reexecutado nesta revisão |
+| tests/IntegrationTests.ps1 | PASS: 60 assertions | Console, replay, backup/restauracao, health/retencao; sem SCM |
+| tests/JournalTests.cs | PASS: 20 assertions | Payloads, hash, conflitos e recuperacao; sem SG3 |
 | tests/DesktopE2E.py | Histórico: fluxo completo simulado | Não reexecutado nesta revisão |
 | tests/ImportedDesktopE2E.py | Arquivo existente | Execução não comprovada nesta revisão |
 | Cobertura de código | Não medida | Meta 80% ainda não demonstrada |
@@ -41,7 +42,7 @@ Revisão 2026-09-16, versão 0.2. Substitui rascunhos genéricos que descreviam 
 ## Ordem de continuidade
 
 1. Confirmar protocolo SG3 usando manual/captura autorizada; endpoint histórico já identificado, não pedir IP/porta novamente.
-2. Implementar journal, replay, separação evento/ocorrência e contratos do driver.
+2. Evoluir journal/replay e envelopes locais ja implementados: supervisao, retencao, separação evento real/ocorrência e contratos do driver.
 3. Implementar/homologar cliente TCP em laboratório; comparar com Printer Log.
 4. Definir banco servidor, completar cadastros e reconciliar migração sem sobrescrever originais.
 5. Medir cobertura; validar instalação, carga e recuperação no ambiente escolhido.

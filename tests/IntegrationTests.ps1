@@ -64,15 +64,29 @@ try {
     [xml]$state = Get-Content -LiteralPath $dataFile -Raw
     Assert-True (@($state.Visep.Incidents.Incident).Count -eq 1) 'Mensagem invalida persistida.'
 
+    $captureDirectory = Join-Path $inbox 'captures'
+    $captures = @(Get-ChildItem -LiteralPath $captureDirectory -Filter '*.xml' | ForEach-Object {
+        ([xml](Get-Content -LiteralPath $_.FullName -Raw)).capture
+    })
+    Assert-True ($captures.Count -eq 4) 'Capturas nao preservaram cada entrega, inclusive duplicata.'
+    Assert-True (@($captures | Where-Object { $_.state -eq 'delivered' }).Count -eq 2) 'Estado de entrega incorreto.'
+    Assert-True (@($captures | Where-Object { $_.state -eq 'invalid' }).Count -eq 2) 'Estado de entrada invalida incorreto.'
+    $originalCapture = $captures | Where-Object { $_.source -eq 'valid.xml' }
+    $duplicateCapture = $captures | Where-Object { $_.source -eq 'duplicate.xml' }
+    Assert-True ($originalCapture.id -ne $duplicateCapture.id) 'Retransmissao perdeu identidade propria.'
+    Assert-True ($originalCapture.payloadSha256 -eq $duplicateCapture.payloadSha256) 'Payload identico perdeu correlacao.'
+    Assert-True ($originalCapture.capturedUtc -match 'Z$') 'Instante da captura deve ser UTC.'
+
     $journalDirectory = Join-Path $inbox 'journal'
     Assert-True (Test-Path -LiteralPath $journalDirectory) 'Journal duravel ausente.'
     $journalBefore = @(Get-ChildItem -LiteralPath $journalDirectory -File -Recurse)
     Assert-True ($journalBefore.Count -gt 0) 'Journal vazio apos recepcao.'
     & $receiver --replay $dataFile | Out-Null
-    # Invalid source messages remain in the journal and may make replay report failure.
+    Assert-True ($LASTEXITCODE -eq 1) 'Replay nao reportou entradas invalidas preservadas.'
     [xml]$state = Get-Content -LiteralPath $dataFile -Raw
     Assert-True (@($state.Visep.Incidents.Incident).Count -eq 1) 'Replay duplicou ocorrencia.'
     Assert-True ($state.Visep.Incidents.Incident.Id -eq $incidentId) 'Replay alterou identidade.'
+    Assert-True (@(Get-ChildItem -LiteralPath $captureDirectory -Filter '*.xml').Count -eq 4) 'Replay inventou novas capturas.'
 
     $sql = Join-Path $sandbox 'synthetic.sql'
     @'
@@ -96,13 +110,21 @@ CREATE VIEW sample_view AS SELECT id FROM sample;
     $backup = Join-Path $sandbox 'backup'
     $restored = Join-Path $sandbox 'restored'
     & (Join-Path $root 'scripts\Backup.ps1') -DataDirectory $dataDirectory -Destination $backup | Out-Null
+    $retentionPreview = (& $receiver --retention $dataFile $backup '2099-01-01T00:00:00Z' | Out-String)
+    Assert-True ($LASTEXITCODE -eq 0) 'Previa de retencao com backup valido falhou.'
+    Assert-True ($retentionPreview -match 'candidateCaptures=4; candidatePayloads=3') 'Plano de retencao divergente.'
+    & $receiver --retention $dataFile $backup '2099-01-01T00:00:00Z' --apply | Out-Null
+    Assert-True ($LASTEXITCODE -eq 0) 'Aplicacao da retencao falhou.'
+    Assert-True (@(Get-ChildItem -LiteralPath $journalDirectory -Filter '*.raw').Count -eq 0 -and @(Get-ChildItem -LiteralPath $captureDirectory -Filter '*.xml').Count -eq 0) 'Retencao nao removeu somente o conjunto planejado.'
     & (Join-Path $root 'scripts\Restore.ps1') -BackupDirectory $backup -Destination $restored | Out-Null
     $manifest = Get-Content -LiteralPath (Join-Path $backup 'manifest.json') -Raw | ConvertFrom-Json
     foreach ($entry in $manifest) {
         Assert-True ((Get-FileHash -LiteralPath (Join-Path $restored $entry.Path)).Hash -eq $entry.Sha256) ('Restore divergente: ' + $entry.Path)
     }
     Assert-True (@($manifest | Where-Object { $_.Path -like 'inbox\journal\*' }).Count -gt 0) 'Backup omitiu journal.'
+    Assert-True (@($manifest | Where-Object { $_.Path -like 'inbox\captures\*' }).Count -eq 4) 'Backup omitiu envelopes de captura.'
     & $receiver --replay (Join-Path $restored 'data.xml') | Out-Null
+    Assert-True ($LASTEXITCODE -eq 1) 'Replay restaurado nao reportou entradas invalidas.'
     [xml]$restoredState = Get-Content -LiteralPath (Join-Path $restored 'data.xml') -Raw
     Assert-True (@($restoredState.Visep.Incidents.Incident).Count -eq 1) 'Replay restaurado duplicou ocorrencia.'
     Assert-Rejected { & (Join-Path $root 'scripts\Restore.ps1') -BackupDirectory $backup -Destination $restored } 'Restore sobrescreveu destino existente.'

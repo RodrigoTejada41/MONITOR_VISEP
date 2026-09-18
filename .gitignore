@@ -2,6 +2,7 @@
 /artifacts/
 /build/
 /data/
+/resultados-sg3/
 /Inventario/*
 !/Inventario/README.md
 !/Inventario/Documentacao_Integracao_SurGard_SG3_Substituicao_BYKOM.docx

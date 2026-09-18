@@ -73,7 +73,7 @@ def main():
         login.wait('visible', timeout=20)
         for name, value in [('Usuario', 'importtest'), ('Senha', password), ('Confirmacao (primeiro acesso)', password)]:
             login.child_window(auto_id=name, control_type='Edit').set_edit_text(value)
-        login.child_window(title='Entrar / Criar primeiro admin', control_type='Button').invoke()
+        login.child_window(title='Criar administrador', control_type='Button').invoke()
         window = app.window(title='VISEP - importtest (Admin)')
         window.wait('visible', timeout=25)
         password = None

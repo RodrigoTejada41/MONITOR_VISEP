@@ -19,7 +19,7 @@ namespace Visep.Desktop
             try
             {
                 Store store = new Store(path);
-                using (LoginForm login = new LoginForm(store))
+                using (LoginForm login = new LoginForm(store, path))
                     if (login.ShowDialog() == DialogResult.OK) Application.Run(new MainForm(store, login.Session, path));
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "Falha ao iniciar", MessageBoxButtons.OK, MessageBoxIcon.Error); }
@@ -61,27 +61,30 @@ namespace Visep.Desktop
     internal sealed class LoginForm : WorkForm
     {
         public Session Session { get; private set; }
-        public LoginForm(Store store)
+        public LoginForm(Store store, string path)
         {
-            Text = "VISEP - Autenticacao"; Width = 520; Height = 280;
+            bool firstAccess = !store.HasUsers;
+            Text = "VISEP - Autenticacao"; Width = 620; Height = 310;
             StartPosition = FormStartPosition.CenterScreen; FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false;
             TableLayoutPanel fields = Fields();
             TextBox user = Field(fields, "Usuario", false);
             TextBox password = Field(fields, "Senha", true);
-            TextBox confirm = Field(fields, "Confirmacao (primeiro acesso)", true);
-            Label status = new Label { Dock = DockStyle.Bottom, Height = 45, Text = "Primeiro acesso: crie administrador. Senha: 12 a 256 caracteres." };
-            Button enter = Button("Entrar / Criar primeiro admin", async delegate
+            TextBox confirm = firstAccess ? Field(fields, "Confirmacao (primeiro acesso)", true) : null;
+            TextBox database = Field(fields, "Base de dados", false); database.Text = path; database.ReadOnly = true;
+            Label status = new Label { Dock = DockStyle.Bottom, Height = 45, Text = firstAccess ? "Primeiro acesso: crie administrador. Senha: 12 a 256 caracteres." : "Informe seu usuario e senha cadastrados." };
+            Button enter = Button(firstAccess ? "Criar administrador" : "Entrar", async delegate
             {
-                string username = user.Text.Trim(), secret = password.Text, confirmation = confirm.Text;
+                string username = user.Text.Trim(), secret = password.Text, confirmation = confirm == null ? "" : confirm.Text;
                 await Run(delegate
                 {
                     if (!store.HasUsers)
                     {
+                        if (!firstAccess) throw new InvalidOperationException("Base sem usuarios. Feche e abra novamente para verificar o primeiro acesso.");
                         if (secret != confirmation) throw new InvalidOperationException("Confirmacao da senha diferente.");
                         store.Bootstrap(username, secret);
                     }
                     Session = store.Login(username, secret);
-                }, delegate { password.Clear(); confirm.Clear(); DialogResult = DialogResult.OK; Close(); });
+                }, delegate { password.Clear(); if (confirm != null) confirm.Clear(); DialogResult = DialogResult.OK; Close(); });
             });
             enter.Dock = DockStyle.Bottom; AcceptButton = enter;
             Controls.Add(fields); Controls.Add(enter); Controls.Add(status);
@@ -122,7 +125,8 @@ namespace Visep.Desktop
             events.Controls.Add(grid); events.Controls.Add(detail); events.Controls.Add(actions);
             AddClients(tabs); AddLegacyHistory(tabs); AddSimulation(tabs); AddAdministration(tabs);
             status.Dock = DockStyle.Bottom; status.Height = 26;
-            Controls.Add(tabs); Controls.Add(status); Controls.Add(banner);
+            TextBox database = new TextBox { Name = "Base de dados", AccessibleName = "Base de dados", Dock = DockStyle.Bottom, ReadOnly = true, Text = path };
+            Controls.Add(tabs); Controls.Add(status); Controls.Add(database); Controls.Add(banner);
             timer.Tick += async delegate { await RefreshEvents(); };
             Shown += async delegate { await RefreshEvents(); timer.Start(); };
             FormClosed += delegate { timer.Stop(); timer.Dispose(); };

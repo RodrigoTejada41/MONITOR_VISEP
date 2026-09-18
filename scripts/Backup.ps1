@@ -22,7 +22,7 @@ try {
     Copy-Item -LiteralPath (Join-Path $source 'data.xml') -Destination $target
     $inbox = Join-Path $source 'inbox'
     if (Test-Path $inbox) { Copy-Item -LiteralPath $inbox -Destination $target -Recurse }
-    $files = @(Get-ChildItem $target -Recurse -File | ForEach-Object {
+    $files = @(Get-ChildItem $target -Recurse | Where-Object { !$_.PSIsContainer } | ForEach-Object {
         [pscustomobject]@{ Path=$_.FullName.Substring($target.Length + 1); Sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash }
     })
     $files | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $target 'manifest.json') -Encoding UTF8
