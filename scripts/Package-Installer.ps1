@@ -9,10 +9,13 @@ New-Item -ItemType Directory -Path $stage,(Join-Path $stage 'build'),(Join-Path 
 foreach ($name in @('Visep.Core.dll','Visep.Desktop.exe','Visep.Desktop.exe.config','Visep.Receiver.exe','Visep.Receiver.exe.config','Visep.LegacyInspector.exe','Visep.LegacyInspector.exe.config')) {
     Copy-Item -LiteralPath (Join-Path $root ('build\' + $name)) -Destination (Join-Path $stage 'build')
 }
-foreach ($name in @('Install.ps1','Installer.Common.ps1','Menu-Servidor.ps1','Menu-Servidor.cmd','Analisar-SG3.cmd','Verificar-Ambiente.ps1','Verificar-Ambiente.cmd','Testar-SG3.ps1','Uninstall.ps1')) {
+foreach ($name in @('Install.ps1','Installer.Common.ps1','Menu-Servidor.ps1','Menu-Servidor.cmd','Analisar-SG3.cmd','Verificar-Ambiente.ps1','Verificar-Ambiente.cmd','Testar-SG3.ps1','Uninstall.ps1','Preparar-Importacao-BYKOM.ps1')) {
     Copy-Item -LiteralPath (Join-Path $root ('scripts\' + $name)) -Destination (Join-Path $stage 'scripts')
 }
-Copy-Item -LiteralPath (Join-Path $root 'docs\INSTALADOR.md') -Destination (Join-Path $stage 'docs')
+foreach ($name in @('INSTALADOR.md','IMPORTACAO_BYKOM.md')) { Copy-Item -LiteralPath (Join-Path $root ('docs\' + $name)) -Destination (Join-Path $stage 'docs') }
+$migration = Join-Path $stage 'migration'
+New-Item -ItemType Directory -Path $migration | Out-Null
+foreach ($name in @('import_legacy.py','sql_dump.py')) { Copy-Item -LiteralPath (Join-Path $root ('src\Migration\' + $name)) -Destination $migration }
 Get-ChildItem $stage -Recurse -File | Sort-Object FullName | ForEach-Object {
     '{0} *{1}' -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash,$_.FullName.Substring($stage.Length + 1)
 } | Set-Content (Join-Path $stage 'SHA256SUMS.txt') -Encoding ASCII

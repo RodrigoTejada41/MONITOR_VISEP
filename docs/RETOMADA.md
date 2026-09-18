@@ -4,6 +4,10 @@
 
 O r10/r11 foram executados no Server 2008 R2 e recusaram corretamente atualizar enquanto `Visep.Desktop.exe` estava aberto no PID 4544. Nenhum arquivo foi atualizado. Eles mostraram "Instalacao concluida" indevidamente porque Windows PowerShell 2 interrompeu o tratador que usava `Write-Error`. O r12 escreve a falha diretamente no console e retorna código 1. Use somente `artifacts/VISEP-Setup-20260918-r12.exe`; r10/r11 estao supersedidos.
 
+## Previa de clientes BYKOM r14
+
+Backup do servidor localizado: `C:\BACKUP_SQL\bykom.sql`, 663570312 bytes, data 2026-09-09. O r14 inclui `Preparar-Importacao-BYKOM.ps1`, `import_legacy.py` e `sql_dump.py`; SHA-256 do instalador `E83418B6EF0EFAA39BE1EDDFE295D6A6CB2FBAAAF7DB377C5D4BA27FE355374F`. A previa lê SQL como texto e gera cópia isolada em `C:\ProgramData\Visep-Imports`; não executa SQL nem altera a base ativa. Requer Python 3 no servidor. O mapeamento atual gera contas `BYKOM-ORDER_ID`; elas são identificadores legados e não comprovam vínculo com as contas SG3. Aplicação na base ativa permanece bloqueada até analisar contagens da prévia e reconciliar `ORDER_ID`, `ID_RC`, `ID_CL` e conta SG3.
+
 ## Atualizacao de instalador e validacao no servidor - 2026-09-18
 
 O teste presencial do r8 passou no Server 2008 R2 SP1: análise da captura preservada retornou 230 válidas, 54 payloads distintos, zero inválidas e 48 Unknown; verificador aprovou SO x64, PowerShell 2 e .NET 4.7.2; interface abriu, criou cliente TEST001, simulou evento 130/001/01, assumiu, registrou ação e encerrou a ocorrência. O evento foi preservado em uma base extraída `C:\CVISEP-Teste\...\data\teste-servidor\data.xml`, não na base do serviço `C:\ProgramData\Visep\data.xml`. A causa foi abrir o teste temporário e depois o menu/serviço em outra base. Não houve perda: a base antiga contém 1 cliente e 1 ocorrência fechada.
