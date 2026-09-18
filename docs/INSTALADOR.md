@@ -1,6 +1,6 @@
-# Instalador VISEP r9
+# Instalador VISEP
 
-Execute `VISEP-Setup-20260918-r9.exe` como administrador. O instalador valida Windows/.NET, identifica o servico `VisepReceiver`, preserva a pasta de dados e atualiza os binarios no caminho ja registrado pelo servico. Nao e necessario extrair o pacote em pasta de teste.
+Execute o pacote VISEP mais recente fornecido para a instalação como administrador. O instalador valida Windows/.NET, identifica o servico `VisepReceiver`, preserva a pasta de dados e atualiza os binarios no caminho ja registrado pelo servico. Nao e necessario extrair o pacote em pasta de teste.
 
 Se encontrar bases antigas em `C:\CVISEP-Teste` ou `C:\CVISEP-r8`, ele mostra usuarios, clientes e ocorrencias e exige selecao explicita. Ele nunca escolhe por data/tamanho e nunca mescla journals/inbox de bases diferentes. Antes de alterar, cria uma copia com hash conferido em `C:\ProgramData\Visep-Installer-Backups`.
 

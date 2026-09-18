@@ -1,5 +1,11 @@
 # Retomada exata
 
+## Atualização de documentação pública - 2026-09-18
+
+README revisado para refletir o produto entregue: central WinForms, persistência XML, receptor de simulação, receptor SG3 contínuo, instalador e prévia BYKOM operacional reduzida. Foram removidas afirmações obsoletas de que o driver SG3 ainda não existia, referência ao r9/r10 como pacote atual e o estado antigo das 11 specs.
+
+Limite mantido: a captura SG3 contínua persiste raw/envelope e envia ACK após persistência, mas não cria ocorrências automaticamente. A prévia BYKOM importa somente cadastro operacional isolado; aplicar à base ativa depende de reconciliar `ORDER_ID`, `ID_RC`, `ID_CL` e contas SG3. Validação desta alteração: links locais conferidos e `git diff --check` sem erro. Próxima ação: instalar r16 no servidor, gerar a prévia BYKOM e confirmar o mapeamento antes de aplicar clientes.
+
 ## Correcao r12 - resultado de falha do instalador
 
 O r10/r11 foram executados no Server 2008 R2 e recusaram corretamente atualizar enquanto `Visep.Desktop.exe` estava aberto no PID 4544. Nenhum arquivo foi atualizado. Eles mostraram "Instalacao concluida" indevidamente porque Windows PowerShell 2 interrompeu o tratador que usava `Write-Error`. O r12 escreve a falha diretamente no console e retorna código 1. Use somente `artifacts/VISEP-Setup-20260918-r12.exe`; r10/r11 estao supersedidos.

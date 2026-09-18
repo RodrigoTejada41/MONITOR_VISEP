@@ -1,24 +1,44 @@
-# MONITOR_VISEP
+# VISEP
 
-Checkpoint atual (2026-09-18): instalador unico r10 com atualizacao preservando bases e modo SG3 continuo, alem do pacote r8 de supervisao/testes. Retome por [docs/RETOMADA.md](docs/RETOMADA.md). O receptor continuo grava capturas SG3, mas geracao de ocorrencias reais ainda esta pendente. Binarios, capturas e Printer sao locais e nao acompanham o clone.
+Central de monitoramento de alarmes para Windows Server 2008 R2 SP1 x64, desenvolvida em C# / WinForms (.NET Framework 4.7.2).
 
+## Componentes
 
-Central de monitoramento em C# / WinForms (.NET Framework 4.7.2), com receptor de simulacao e ferramentas de migracao BYKOM. Integracao SG3 real ainda pendente de implementacao e homologacao.
+- Interface operacional para autenticação, clientes, ocorrências, atendimento, ações e encerramento.
+- Persistência local em XML, com bloqueio de escrita, backup e trilha de auditoria.
+- Receptor de simulação independente da interface.
+- Receptor SG3 contínuo por TCP, com reconexão, journal bruto, envelopes de captura e ACK após persistência.
+- Analisador SG3 offline para validação estrutural das capturas sem expor payloads.
+- Instalador com atualização de instalação existente, backup e inicialização do serviço `VisepReceiver`.
+- Prévia de importação BYKOM: clientes, endereços, contatos, zonas, sensores, receptor, conta e partição. A prévia é isolada e não altera a base ativa.
 
-## Retomada por outra IA ou desenvolvedor
+## Limites atuais
 
-Leia primeiro [docs/RETOMADA.md](docs/RETOMADA.md). Depois consulte o [organograma](docs/ORGANOGRAMA.md), a [matriz das 11 specs](docs/specs/README.md), a [integracao SG3](docs/INTEGRACAO_SG_SYSTEM_III.md), a [comparacao do modelo](docs/COMPARACAO_SG3_MODELO.md) e o [teste BYKOM](docs/TESTE_BYKOM.md).
+O receptor SG3 já captura e preserva sinais continuamente. A conversão automática desses sinais em ocorrências permanece bloqueada até a reconciliação homologada entre os identificadores BYKOM e as contas SG3 reais.
 
-Estado revisado: 5 specs em implementacao, 6 em validacao, nenhuma concluida para producao. Base local funcional; driver SG3, banco multiestacao e homologacao operacional pendentes.
+A persistência atual é local em XML. Uso multiestação e homologação operacional completa ainda não foram liberados.
 
-Receptor simulado possui [journal, envelopes de captura e replay](docs/JOURNAL_REPLAY.md) para conservar payloads, origem local, instante UTC e estado de entrega antes de recuperar entradas sem duplicar ocorrencias. Nao e driver SG3.
+## Instalação e operação
 
-O mesmo receptor oferece `--health` para supervisao somente leitura e `--retention` para previa/aplicacao de retencao respaldada por backup verificado. Operacao em [journal e replay](docs/JOURNAL_REPLAY.md).
+Execute como administrador o instalador mais recente fornecido para a instalação. O pacote é distribuído fora do clone público; ele preserva a base selecionada, atualiza os binários e inicia o serviço.
 
-Confira `git status --short` e `git log -1` antes de alterar arquivos. O endpoint historico identificado e 192.168.1.249:1025/TCP; isso nao significa que o driver ja esteja implementado. Nao conectar ao equipamento de producao automaticamente.
+- [Instalador](docs/INSTALADOR.md)
+- [Recepção e validação SG3](docs/INTEGRACAO_SG_SYSTEM_III.md)
+- [Prévia de importação BYKOM](docs/IMPORTACAO_BYKOM.md)
+- [Retomada técnica](docs/RETOMADA.md)
 
-Build e testes C#: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/Build.ps1 -Test`.
+## Desenvolvimento
 
-Testes de importacao: `python -m unittest discover -s tests -p 'test_*.py'`.
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/Build.ps1 -Test
+```
 
-Documento SG3 e modelo MIT estao versionados em [Inventario](Inventario/README.md). Backups BYKOM, configuracoes privadas, planilhas de clientes, tools, data e build permanecem ignorados. Um clone nao inclui esses dados. [Evidencias e manifesto](docs/evidencias/README.md) permitem identificar os insumos para uma copia privada separada. O repositorio e publico.
+A suíte de importação é executada pelo runtime portátil distribuído no instalador. No ambiente de desenvolvimento com Python disponível:
+
+```powershell
+python -m unittest discover -s tests -p 'test_*.py'
+```
+
+## Dados privados
+
+Backups BYKOM, dados de clientes, configurações, capturas completas, binários e diretórios de trabalho locais não fazem parte do repositório público. Consulte [Inventario/README.md](Inventario/README.md) e [docs/evidencias/README.md](docs/evidencias/README.md) para os insumos que precisam ser transferidos por canal privado.
