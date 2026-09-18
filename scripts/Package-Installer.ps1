@@ -16,6 +16,9 @@ foreach ($name in @('INSTALADOR.md','IMPORTACAO_BYKOM.md')) { Copy-Item -Literal
 $migration = Join-Path $stage 'migration'
 New-Item -ItemType Directory -Path $migration | Out-Null
 foreach ($name in @('import_legacy.py','sql_dump.py')) { Copy-Item -LiteralPath (Join-Path $root ('src\Migration\' + $name)) -Destination $migration }
+$runtime = Join-Path $stage 'runtime\python'
+New-Item -ItemType Directory -Force -Path $runtime | Out-Null
+Expand-Archive -LiteralPath (Join-Path $root 'tools\vendor\python-3.8.10-embed-amd64.zip') -DestinationPath $runtime
 Get-ChildItem $stage -Recurse -File | Sort-Object FullName | ForEach-Object {
     '{0} *{1}' -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash,$_.FullName.Substring($stage.Length + 1)
 } | Set-Content (Join-Path $stage 'SHA256SUMS.txt') -Encoding ASCII

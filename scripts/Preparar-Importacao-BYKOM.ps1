@@ -11,13 +11,18 @@ $scriptDirectory = Split-Path $MyInvocation.MyCommand.Path -Parent
 $pythonScript = Join-Path (Split-Path $scriptDirectory -Parent) 'migration\import_legacy.py'
 if (!(Test-Path -LiteralPath $SqlFile -PathType Leaf)) { throw 'Backup SQL nao encontrado.' }
 if (!(Test-Path -LiteralPath $pythonScript -PathType Leaf)) { throw 'Importador BYKOM ausente no pacote.' }
-$python = Get-Command python.exe -ErrorAction SilentlyContinue
-if ($null -eq $python) { throw 'Python 3 nao encontrado. Instale Python 3 no servidor antes da previa; o SQL nao sera executado.' }
+$runtimePython = Join-Path (Split-Path $scriptDirectory -Parent) 'runtime\python\python.exe'
+$python = if (Test-Path -LiteralPath $runtimePython -PathType Leaf) { $runtimePython } else { $null }
+if ($null -eq $python) {
+    $command = Get-Command python.exe -ErrorAction SilentlyContinue
+    if ($null -ne $command) { $python = $command.Source }
+}
+if ($null -eq $python) { throw 'Runtime Python ausente no VISEP. Execute o instalador r15 ou posterior; o SQL nao sera executado.' }
 $destination = Join-Path $DestinationRoot ('bykom-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 New-Item -ItemType Directory -Force -Path $DestinationRoot | Out-Null
 $arguments = @($pythonScript,'--source',$SqlFile,'--destination',$destination,'--encoding',$Encoding,'--history-limit',$HistoryLimit)
 if ($AllowControlSeparator) { $arguments += '--allow-control-separator' }
-& $python.Source @arguments
+& $python @arguments
 if ($LASTEXITCODE -ne 0) { throw 'Previa BYKOM falhou. Base ativa VISEP nao foi alterada.' }
 Write-Output ('Previa concluida: ' + $destination)
 Write-Output ('Relatorio: ' + (Join-Path $destination 'import-report.json'))

@@ -114,6 +114,10 @@ try {
         }
     }
     Get-ChildItem $source | Where-Object { !$_.PSIsContainer -and $_.Name -notmatch 'Tests' -and $_.Extension -match '^\.(exe|dll|config|pdb)$' } | Copy-Item -Destination $InstallDirectory -Force
+    foreach ($directory in @('migration','runtime')) {
+        $resource = Join-Path $root $directory
+        if (Test-Path -LiteralPath $resource -PathType Container) { Copy-VisepVerifiedTree $resource (Join-Path $InstallDirectory $directory) }
+    }
     & icacls.exe $DataDirectory '/grant' '*S-1-5-18:(OI)(CI)F' '*S-1-5-32-544:(OI)(CI)F' '*S-1-5-19:(OI)(CI)M' ($OperatorAccount + ':(OI)(CI)M') | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'Falha ACL dados.' }
     & icacls.exe $InstallDirectory '/grant' '*S-1-5-19:(OI)(CI)RX' | Out-Null
