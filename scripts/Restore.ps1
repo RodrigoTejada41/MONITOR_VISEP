@@ -16,13 +16,13 @@ foreach ($file in $manifest) {
     if (!$path.StartsWith($source + '\',[StringComparison]::OrdinalIgnoreCase)) { throw 'Caminho invalido no manifesto.' }
     if ((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ne $file.Sha256) { throw 'Backup corrompido: hash divergente.' }
 }
-$settings = New-Object Xml.XmlReaderSettings
-$settings.DtdProcessing = [Xml.DtdProcessing]::Prohibit
+$settings = New-Object System.Xml.XmlReaderSettings
+$settings.DtdProcessing = [System.Xml.DtdProcessing]::Prohibit
 $settings.XmlResolver = $null
 $settings.MaxCharactersInDocument = 64 * 1024 * 1024
-$reader = [Xml.XmlReader]::Create((Join-Path $source 'data.xml'),$settings)
+$reader = [System.Xml.XmlReader]::Create((Join-Path $source 'data.xml'),$settings)
 try {
-    $document = New-Object Xml.XmlDocument
+    $document = New-Object System.Xml.XmlDocument
     $document.XmlResolver = $null
     $document.Load($reader)
 } finally { $reader.Dispose() }

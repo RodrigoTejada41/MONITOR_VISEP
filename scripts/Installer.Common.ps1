@@ -4,11 +4,11 @@ function Get-VisepHash([string]$Path) {
     try { return [BitConverter]::ToString($sha.ComputeHash($stream)) } finally { $stream.Dispose(); $sha.Dispose() }
 }
 function Get-VisepDataSummary([string]$Path) {
-    $doc = New-Object Xml.XmlDocument
-    $settings = New-Object Xml.XmlReaderSettings
-    $settings.DtdProcessing = [Xml.DtdProcessing]::Prohibit
+    $doc = New-Object System.Xml.XmlDocument
+    $settings = New-Object System.Xml.XmlReaderSettings
+    $settings.DtdProcessing = [System.Xml.DtdProcessing]::Prohibit
     $settings.XmlResolver = $null
-    $reader = [Xml.XmlReader]::Create($Path,$settings)
+    $reader = [System.Xml.XmlReader]::Create($Path,$settings)
     try { $doc.XmlResolver = $null; $doc.Load($reader) } finally { $reader.Close() }
     if ($doc.DocumentElement.Name -ne 'Visep' -or $doc.DocumentElement.GetAttribute('SchemaVersion') -ne '1') { throw ('Base XML invalida: ' + $Path) }
     foreach ($section in @('Users','Clients','Incidents','Audit')) {
