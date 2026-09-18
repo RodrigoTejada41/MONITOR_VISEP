@@ -1,5 +1,9 @@
 # Retomada exata
 
+## Evidência do servidor: script BYKOM ausente - 2026-09-18
+
+No servidor, a execução de `C:\Program Files\VISEP\scripts\Preparar-Importacao-BYKOM.ps1` retornou `CommandNotFoundException`. Portanto a instalação ativa não contém a entrega r16 com runtime portátil e scripts de migração, ou a atualização anterior não foi concluída. Não executar importação nem criar cópias manuais de scripts. Próxima ação: instalar `VISEP-Setup-20260918-r16.exe`, confirmar a existência do script e só então executar a prévia contra `C:\BACKUP_SQL\bykom.sql` com `-AllowControlSeparator`.
+
 ## Atualização de documentação pública - 2026-09-18
 
 README revisado para refletir o produto entregue: central WinForms, persistência XML, receptor de simulação, receptor SG3 contínuo, instalador e prévia BYKOM operacional reduzida. Foram removidas afirmações obsoletas de que o driver SG3 ainda não existia, referência ao r9/r10 como pacote atual e o estado antigo das 11 specs.
