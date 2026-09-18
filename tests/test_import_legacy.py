@@ -47,6 +47,25 @@ class ImportTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_state(iter([row, row]), 'abc', 1)
 
+    def test_clients_only_keeps_contacts_zones_sensors_without_history(self):
+        rows = [
+            ('abmacodigos', {'ORDER_ID': '1', 'NOMBRE': 'Cliente'}),
+            ('tlmapersonas', {'ORDER_ID': '4', 'NOMBRE': 'Contato'}),
+            ('tlrlpersonas', {'ORDER_ID': '44', 'ORDER_RL': '4', 'TELEFONO': '5551234'}),
+            ('abrltelefonos', {'ORDER_ID': '2', 'ORDER_RL': '1', 'CODIGO_ID': '4', 'DATOS01': 'Principal'}),
+            ('abrlzonas', {'ORDER_ID': '3', 'ORDER_RL': '1', 'N_ZONA': '01', 'NOMBRE': 'Porta'}),
+            ('abrlsensores', {'ORDER_ID': '4', 'ORDER_RL': '1', 'SENSOR_ID': 'S1', 'NOMBRE': 'Sensor'}),
+            ('evmahistorico', {'ORDER_ID': '5', 'ORDER_RL': '1', 'EVENTO': '130'}),
+        ]
+        root, report = build_state(iter(rows), 'abc', 0, clients_only=True)
+        client = root.find('./Clients/Client')
+        self.assertIn('Contato', client.get('Contacts'))
+        self.assertIn('5551234', client.get('Contacts'))
+        self.assertIn('01 | Porta', client.get('Zones'))
+        self.assertIn('S1 | Sensor', client.get('Equipment'))
+        self.assertIsNone(root.find('LegacyHistory'))
+        self.assertTrue(report['clients_only'])
+
     def test_missing_source_key_fails(self):
         with self.assertRaises(ValueError):
             build_state(iter([('abmacodigos', {'NOMBRE': 'A'})]), 'abc', 1)

@@ -2,7 +2,6 @@ param(
     [Parameter(Mandatory=$true)][string]$SqlFile,
     [string]$DestinationRoot = (Join-Path $env:ProgramData 'Visep-Imports'),
     [ValidateSet('latin-1','utf-8-sig','cp1252')][string]$Encoding = 'latin-1',
-    [ValidateRange(0,10000)][int]$HistoryLimit = 1000,
     [switch]$AllowControlSeparator
 )
 $ErrorActionPreference = 'Stop'
@@ -20,7 +19,7 @@ if ($null -eq $python) {
 if ($null -eq $python) { throw 'Runtime Python ausente no VISEP. Execute o instalador r15 ou posterior; o SQL nao sera executado.' }
 $destination = Join-Path $DestinationRoot ('bykom-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 New-Item -ItemType Directory -Force -Path $DestinationRoot | Out-Null
-$arguments = @($pythonScript,'--source',$SqlFile,'--destination',$destination,'--encoding',$Encoding,'--history-limit',$HistoryLimit)
+$arguments = @($pythonScript,'--source',$SqlFile,'--destination',$destination,'--encoding',$Encoding,'--history-limit','0','--clients-only')
 if ($AllowControlSeparator) { $arguments += '--allow-control-separator' }
 & $python @arguments
 if ($LASTEXITCODE -ne 0) { throw 'Previa BYKOM falhou. Base ativa VISEP nao foi alterada.' }

@@ -31,7 +31,7 @@ def clean(value, report):
     return result
 
 
-def build_state(rows, source_hash, history_limit, progress=None):
+def build_state(rows, source_hash, history_limit, progress=None, clients_only=False):
     if not 0 <= history_limit <= 10000:
         raise ValueError('History limit must be between 0 and 10000')
     counts, tables, history = Counter(), defaultdict(list), []
@@ -43,7 +43,7 @@ def build_state(rows, source_hash, history_limit, progress=None):
         if progress is not None and counts[table] % 250000 == 0:
             progress(table, counts[table])
         row = {key: clean(source.get(key), report) for key in FIELDS[table].split()}
-        if table == 'evmahistorico':
+        if table == 'evmahistorico' and not clients_only:
             entry = (row['FECHAHORA'], counts[table], row)
             if len(history) < history_limit:
                 heapq.heappush(history, entry)
@@ -56,7 +56,7 @@ def build_state(rows, source_hash, history_limit, progress=None):
     clients = ET.SubElement(root, 'Clients')
     ET.SubElement(root, 'Incidents')
     audit = ET.SubElement(root, 'Audit')
-    legacy = ET.SubElement(root, 'LegacyHistory')
+    legacy = None if clients_only else ET.SubElement(root, 'LegacyHistory')
     lookup = {}
     for table, key in [('calles', 'ORDER_ID'), ('ciudad', 'CODIGOCIUD'), ('pamacodigos', 'ORDER_ID'), ('tlmapersonas', 'ORDER_ID')]:
         lookup[table] = {r[key]: r['NOMBRE'] for r in tables[table]}
@@ -83,7 +83,8 @@ def build_state(rows, source_hash, history_limit, progress=None):
         contacts = '\n'.join(' | '.join(filter(None, [lookup['tlmapersonas'].get(r['CODIGO_ID'], ''), ', '.join(phones[r['CODIGO_ID']]), r['DATOS01'], r['DATOS02']])) for r in related['abrltelefonos'])
         zones = '\n'.join(' | '.join(filter(None, [r['N_ZONA'], r['NOMBRE']])) for r in related['abrlzonas'])
         equipment = 'BYKOM: receptor={}; conta={}; particao={}; BORRADO={}; BAJA_LOGICA={}'.format(row['ID_RC'], row['ID_CL'], row['PARTICION'], row['BORRADO'], row['BAJA_LOGICA'])
-        equipment += '\n' + lookup['pamacodigos'].get(row['CODIGOALAR'], '')
+        if not clients_only:
+            equipment += '\n' + lookup['pamacodigos'].get(row['CODIGOALAR'], '')
         equipment += '\n' + '\n'.join(r['SENSOR_ID'] + ' | ' + r['NOMBRE'] for r in related['abrlsensores'])
         values = dict(Id='bykom-' + key, Name=name, Account=account, Address=address, Contacts=contacts, Equipment=equipment.strip(), Zones=zones)
         ET.SubElement(clients, 'Client', **values)
@@ -93,14 +94,15 @@ def build_state(rows, source_hash, history_limit, progress=None):
     for key, groups in relations.items():
         if key not in mapped:
             report['orphan_relations'] += sum(len(group) for group in groups.values())
-    for _, _, row in sorted(history, reverse=True):
-        client = mapped.get(row['ORDER_RL'])
-        if client is None:
-            report['history_orphan_clients'] += 1
-        ET.SubElement(legacy, 'Event', Id=row['ORDER_ID'], SourceClientId=row['ORDER_RL'],
-                      Account=client['Account'] if client else '', ClientName=client['Name'] if client else '',
-                      Code=row['EVENTO'], Zone=row['ZON_US'], OccurredLocal=row['FECHAHORA'],
-                      Detail='BYKOM evmahistorico; horario original, sem conversao; codigo de origem')
+    if not clients_only:
+        for _, _, row in sorted(history, reverse=True):
+            client = mapped.get(row['ORDER_RL'])
+            if client is None:
+                report['history_orphan_clients'] += 1
+            ET.SubElement(legacy, 'Event', Id=row['ORDER_ID'], SourceClientId=row['ORDER_RL'],
+                          Account=client['Account'] if client else '', ClientName=client['Name'] if client else '',
+                          Code=row['EVENTO'], Zone=row['ZON_US'], OccurredLocal=row['FECHAHORA'],
+                          Detail='BYKOM evmahistorico; horario original, sem conversao; codigo de origem')
     now = datetime.now(timezone.utc).isoformat()
     ET.SubElement(audit, 'Entry', AtUtc=now, User='LegacyImporter', Action='ImportTest', Target=source_hash)
     report.update(clients_imported=len(mapped), history_rows_seen=counts['evmahistorico'],
@@ -109,7 +111,8 @@ def build_state(rows, source_hash, history_limit, progress=None):
                       mapping_version=1, created_utc=now, mode='TEST_ONLY', history_limit=history_limit,
                       accounts='BYKOM-ORDER_ID; original receiver/account/partition in Equipment',
                       history='Latest lexical source FECHAHORA; original timezone unverified; read-only sample',
-                      excluded='Credentials, photos, free-form event detail, operators, programmable SQL and unselected tables')
+                      excluded='Credentials, historical events, photos, free-form event detail, operators, programmable SQL and unselected tables' if clients_only else 'Credentials, photos, free-form event detail, operators, programmable SQL and unselected tables',
+                      clients_only=clients_only)
 
 
 def digest(path):
@@ -117,7 +120,7 @@ def digest(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def run(source, destination, encoding, history_limit, allow_control_separator=False):
+def run(source, destination, encoding, history_limit, allow_control_separator=False, clients_only=False):
     from sql_dump import iter_rows
     source, destination = Path(source).resolve(), Path(destination).resolve()
     if destination.exists():
@@ -129,8 +132,9 @@ def run(source, destination, encoding, history_limit, allow_control_separator=Fa
     options = {'encoding': encoding}
     if allow_control_separator:
         options.update(allow_control_separator=True, diagnostics=diagnostics)
-    root, report = build_state(iter_rows(source, set(FIELDS), **options), before, history_limit,
-                               lambda table, count: print('Reading {}: {} rows'.format(table, count), flush=True))
+    selected = set(FIELDS) if not clients_only else {'abmacodigos', 'abrltelefonos', 'tlmapersonas', 'tlrlpersonas', 'abrlzonas', 'abrlsensores', 'calles', 'ciudad'}
+    root, report = build_state(iter_rows(source, selected, **options), before, history_limit,
+                               lambda table, count: print('Reading {}: {} rows'.format(table, count), flush=True), clients_only)
     if digest(source) != before:
         raise ValueError('Source changed during import')
     payload = ET.tostring(root, encoding='utf-8', xml_declaration=True)
@@ -165,9 +169,10 @@ if __name__ == '__main__':
     parser.add_argument('--encoding', default='utf-8-sig', choices=['utf-8-sig', 'latin-1', 'cp1252'])
     parser.add_argument('--history-limit', type=int, default=1000)
     parser.add_argument('--allow-control-separator', action='store_true', help='Tolerate only known 0x05 artifact between row tuples; record count')
+    parser.add_argument('--clients-only', action='store_true', help='Import clients, addresses, contacts, zones and sensors only')
     args = parser.parse_args()
     try:
-        result = run(args.source, args.destination, args.encoding, args.history_limit, args.allow_control_separator)
+        result = run(args.source, args.destination, args.encoding, args.history_limit, args.allow_control_separator, args.clients_only)
         print(json.dumps({k: result[k] for k in ('clients_imported', 'history_rows_seen', 'history_imported', 'history_not_loaded', 'source_sha256')}))
     except Exception as error:
         print('Import failed: ' + type(error).__name__ + '. Destination not ready; original SQL unchanged.')
