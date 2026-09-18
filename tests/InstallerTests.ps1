@@ -1,5 +1,13 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path (Split-Path $MyInvocation.MyCommand.Path -Parent) -Parent
+$powerShell2Scripts = @(
+    (Join-Path $root 'scripts\Installer.Common.ps1'),
+    (Join-Path $root 'scripts\Restore.ps1')
+)
+foreach ($script in $powerShell2Scripts) {
+    $source = [IO.File]::ReadAllText($script)
+    if ($source -match '\[Xml\.') { throw ('PowerShell 2 incompatible XML type abbreviation: ' + $script) }
+}
 . (Join-Path $root 'scripts\Installer.Common.ps1')
 $temp = Join-Path ([IO.Path]::GetTempPath()) ('visep-installer-' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory $temp | Out-Null
